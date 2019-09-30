@@ -12,6 +12,11 @@
 
 from oslo_policy import policy
 
+
+def policy_or(*args):
+    return ' or '.join(args)
+
+
 IDENTITY = 'identity:%s'
 RULE_ADMIN_REQUIRED = 'rule:admin_required'
 RULE_ADMIN_OR_OWNER = 'rule:admin_or_owner'
@@ -30,6 +35,13 @@ RULE_SERVICE_ADMIN_OR_TOKEN_SUBJECT = (
     'rule:service_admin_or_token_subject')  # nosec
 RULE_SERVICE_OR_ADMIN = 'rule:service_or_admin'
 RULE_TRUST_OWNER = 'user_id:%(trust.trustor_user_id)s'
+# In the V release, ``nova.conf [oslo_policy] enforce_scope = True`` is
+# scheduled to become the default. At that point, a policy with ``role:reader``
+# and scope_types=['system'] will be enforced correctly. Until then, though, if
+# enforce_scope is set to False, such a policy would give more access than
+# desired. That is why in the SYSTEM_READER rule that follows, we need to
+# include ``system_scope:all``.
+SYSTEM_READER = 'role:reader and system_scope:all'
 
 
 rules = [

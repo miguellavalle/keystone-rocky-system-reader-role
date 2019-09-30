@@ -17,7 +17,8 @@ from keystone.common.policies import base
 project_policies = [
     policy.DocumentedRuleDefault(
         name=base.IDENTITY % 'get_project',
-        check_str=base.RULE_ADMIN_OR_TARGET_PROJECT,
+        check_str=base.policy_or(base.RULE_ADMIN_OR_TARGET_PROJECT,
+                                 base.SYSTEM_READER),
         # FIXME(lbragstad): The default check_str here should change to be just
         # a role. The OR_TARGET_PROJECT bit of this check_str should actually
         # be moved into keystone. A system administrator should be able to get
@@ -35,7 +36,8 @@ project_policies = [
                      'method': 'GET'}]),
     policy.DocumentedRuleDefault(
         name=base.IDENTITY % 'list_projects',
-        check_str=base.RULE_ADMIN_REQUIRED,
+        check_str=base.policy_or(base.RULE_ADMIN_REQUIRED,
+                                 base.SYSTEM_READER),
         # FIXME(lbragstad): This is set to 'system' until keystone is smart
         # enough to tailor list_project responses for project-scoped tokens
         # without exposing information that doesn't pertain to the scope of the

@@ -17,14 +17,16 @@ from keystone.common.policies import base
 domain_policies = [
     policy.DocumentedRuleDefault(
         name=base.IDENTITY % 'get_domain',
-        check_str=base.RULE_ADMIN_OR_TARGET_DOMAIN,
+        check_str=base.policy_or(base.RULE_ADMIN_OR_TARGET_DOMAIN,
+                                 base.SYSTEM_READER),
         scope_types=['system'],
         description='Show domain details.',
         operations=[{'path': '/v3/domains/{domain_id}',
                      'method': 'GET'}]),
     policy.DocumentedRuleDefault(
         name=base.IDENTITY % 'list_domains',
-        check_str=base.RULE_ADMIN_REQUIRED,
+        check_str=base.policy_or(base.RULE_ADMIN_REQUIRED,
+                                 base.SYSTEM_READER),
         scope_types=['system'],
         description='List domains.',
         operations=[{'path': '/v3/domains',
